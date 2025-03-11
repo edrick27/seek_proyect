@@ -15,28 +15,28 @@ PlatformException _createConnectionError(String channelName) {
   );
 }
 
-class AuthResult {
-  AuthResult({
+class BiometricAuthResult {
+  BiometricAuthResult({
     this.success,
-    this.message,
+    this.errorMessage,
   });
 
   bool? success;
 
-  String? message;
+  String? errorMessage;
 
   Object encode() {
     return <Object?>[
       success,
-      message,
+      errorMessage,
     ];
   }
 
-  static AuthResult decode(Object result) {
+  static BiometricAuthResult decode(Object result) {
     result as List<Object?>;
-    return AuthResult(
+    return BiometricAuthResult(
       success: result[0] as bool?,
-      message: result[1] as String?,
+      errorMessage: result[1] as String?,
     );
   }
 }
@@ -49,7 +49,7 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is AuthResult) {
+    }    else if (value is BiometricAuthResult) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
@@ -61,7 +61,7 @@ class _PigeonCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 129: 
-        return AuthResult.decode(readValue(buffer)!);
+        return BiometricAuthResult.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -81,8 +81,36 @@ class BiometricAuthApi {
 
   final String pigeonVar_messageChannelSuffix;
 
-  Future<AuthResult> authenticate(String reason) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.seek_project.BiometricAuthApi.authenticate$pigeonVar_messageChannelSuffix';
+  Future<bool> isBiometricAvailable() async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.seek_project.BiometricAuthApi.isBiometricAvailable$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as bool?)!;
+    }
+  }
+
+  Future<BiometricAuthResult> authenticateUser(String reason) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.seek_project.BiometricAuthApi.authenticateUser$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -105,7 +133,7 @@ class BiometricAuthApi {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (pigeonVar_replyList[0] as AuthResult?)!;
+      return (pigeonVar_replyList[0] as BiometricAuthResult?)!;
     }
   }
 }

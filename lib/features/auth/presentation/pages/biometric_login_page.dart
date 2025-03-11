@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seek_project/features/auth/presentation/widgets/biometric_login_button.dart';
 
 class BiometricLoginPage extends StatelessWidget {
   const BiometricLoginPage({super.key});
@@ -8,11 +9,16 @@ class BiometricLoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Autenticación Biométrica')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Aquí llamaremos la autenticación biométrica
+        child:  BiometricLoginButton(
+          onAuthResult: (success) {
+            if (success) {
+              print('Prueba de autenticación exitosa');
+              // Navigator.of(context).pushReplacementNamed('/home');
+            } else {
+              print('Prueba de autenticación fallida');
+            }
+
           },
-          child: const Text('Iniciar sesión con biometría'),
         ),
       ),
     );
