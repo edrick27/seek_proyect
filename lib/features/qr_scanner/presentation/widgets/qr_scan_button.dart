@@ -33,6 +33,8 @@ class _QrScanButtonState extends State<QrScanButton> {
     final result = await _scannerService.scanQrCode();
     
     if (result.code != null) {
+
+      
       widget.onScanSuccess(result.code!);
     } else if (result.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
