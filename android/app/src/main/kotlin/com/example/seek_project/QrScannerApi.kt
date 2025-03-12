@@ -34,33 +34,47 @@ private fun wrapError(exception: Throwable): List<Any?> {
   }
 }
 
+/**
+ * Error class for passing custom error details to Flutter via a thrown PlatformException.
+ * @property code The error code.
+ * @property message The error message.
+ * @property details The error details. Must be a datatype supported by the api codec.
+ */
+class FlutterError (
+  val code: String,
+  override val message: String? = null,
+  val details: Any? = null
+) : Throwable()
 
 /** Generated class from Pigeon that represents data sent in messages. */
-data class BiometricAuthResult (
-  val success: Boolean? = null,
+data class QrScanResult (
+  val code: String? = null,
+  val format: String? = null,
   val errorMessage: String? = null
 )
  {
   companion object {
-    fun fromList(pigeonVar_list: List<Any?>): BiometricAuthResult {
-      val success = pigeonVar_list[0] as Boolean?
-      val errorMessage = pigeonVar_list[1] as String?
-      return BiometricAuthResult(success, errorMessage)
+    fun fromList(pigeonVar_list: List<Any?>): QrScanResult {
+      val code = pigeonVar_list[0] as String?
+      val format = pigeonVar_list[1] as String?
+      val errorMessage = pigeonVar_list[2] as String?
+      return QrScanResult(code, format, errorMessage)
     }
   }
   fun toList(): List<Any?> {
     return listOf(
-      success,
+      code,
+      format,
       errorMessage,
     )
   }
 }
-private open class BiometricAuthApiPigeonCodec : StandardMessageCodec() {
+private open class QrScannerApiPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
       129.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BiometricAuthResult.fromList(it)
+          QrScanResult.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -68,7 +82,7 @@ private open class BiometricAuthApiPigeonCodec : StandardMessageCodec() {
   }
   override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
     when (value) {
-      is BiometricAuthResult -> {
+      is QrScanResult -> {
         stream.write(129)
         writeValue(stream, value.toList())
       }
@@ -79,24 +93,24 @@ private open class BiometricAuthApiPigeonCodec : StandardMessageCodec() {
 
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
-interface BiometricAuthApi {
-  fun isBiometricAvailable(callback: (Result<Boolean>) -> Unit)
-  fun authenticateUser(reason: String, callback: (Result<BiometricAuthResult>) -> Unit)
+interface QrScannerApi {
+  fun scanQrCode(callback: (Result<QrScanResult>) -> Unit)
+  fun isQrScanAvailable(callback: (Result<Boolean>) -> Unit)
 
   companion object {
-    /** The codec used by BiometricAuthApi. */
+    /** The codec used by QrScannerApi. */
     val codec: MessageCodec<Any?> by lazy {
-      BiometricAuthApiPigeonCodec()
+      QrScannerApiPigeonCodec()
     }
-    /** Sets up an instance of `BiometricAuthApi` to handle messages through the `binaryMessenger`. */
+    /** Sets up an instance of `QrScannerApi` to handle messages through the `binaryMessenger`. */
     @JvmOverloads
-    fun setUp(binaryMessenger: BinaryMessenger, api: BiometricAuthApi?, messageChannelSuffix: String = "") {
+    fun setUp(binaryMessenger: BinaryMessenger, api: QrScannerApi?, messageChannelSuffix: String = "") {
       val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.seek_project.BiometricAuthApi.isBiometricAvailable$separatedMessageChannelSuffix", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.seek_project.QrScannerApi.scanQrCode$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            api.isBiometricAvailable{ result: Result<Boolean> ->
+            api.scanQrCode{ result: Result<QrScanResult> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))
@@ -111,12 +125,10 @@ interface BiometricAuthApi {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.seek_project.BiometricAuthApi.authenticateUser$separatedMessageChannelSuffix", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.seek_project.QrScannerApi.isQrScanAvailable$separatedMessageChannelSuffix", codec)
         if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-            val reasonArg = args[0] as String
-            api.authenticateUser(reasonArg) { result: Result<BiometricAuthResult> ->
+          channel.setMessageHandler { _, reply ->
+            api.isQrScanAvailable{ result: Result<Boolean> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seek_project/features/auth/presentation/pages/biometric_login_page.dart';
+import 'package:seek_project/features/qr_scanner/presentation/pages/qr_scan_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const BiometricLoginPage(),
+      home: QrScanPage(),
     );
   }
 }
