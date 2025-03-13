@@ -1,16 +1,74 @@
-# seek_project
+# QR Scanner App
 
-A new Flutter project.
+Una aplicación móvil desarrollada en Flutter que permite a los usuarios realizar escaneo de códigos QR y utilizar autenticación biométrica (Face ID/Huella Digital).
 
-## Getting Started
+## Características
 
-This project is a starting point for a Flutter application.
+- 📱 Interfaz de usuario intuitiva y moderna
+- 📷 Escaneo de códigos QR utilizando la cámara del dispositivo
+- 🔐 Autenticación biométrica (Face ID en iOS, Huella Digital en Android)
+- 📊 Historial persistente de códigos QR escaneados
+- 🔄 Procesamiento nativo para optimizar el rendimiento
 
-A few resources to get you started if this is your first Flutter project:
+## Arquitectura y Tecnologías
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Arquitectura Limpia (Clean Architecture)
+- Gestión de estado con BLoC
+- Integración de código nativo mediante Pigeon
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Requisitos previos
+
+- Flutter SDK (versión 3.24.3 o superior)
+- Dart SDK (versión 3.5.3 o superior)
+- Android Studio
+- Un dispositivo físico o emulador con soporte para cámara y autenticación biométrica
+
+## Configuración e instalación
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/edrick27/seek_proyect.git
+cd seek_proyect
+```
+
+### 2. Instalar dependencias
+
+```bash
+flutter pub get
+```
+
+### 3. Ejecutar la aplicación
+
+```bash
+flutter run
+```
+
+
+## Estructura del proyecto
+
+```
+lib/
+│   
+├── features/
+│   ├── auth/
+│   │   └── ... # Módulo de autenticación biométrica
+│   └── qr_scanner/
+│       └── ... # Módulo de escaneo de códigos QR
+├── core/
+│   └── ... # Componentes reutilizables y utilidades
+└── main.dart
+```
+
+## Pruebas
+
+Para ejecutar las pruebas unitarias:
+
+```bash
+flutter test
+```
+
+## Notas adicionales
+
+- La autenticación biométrica requiere que el dispositivo tenga configurado al menos un método biométrico (huella digital).
+- Para el correcto funcionamiento del escáner QR, la aplicación solicitará permisos de cámara durante la primera ejecución.
