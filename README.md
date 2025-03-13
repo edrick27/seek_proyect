@@ -2,6 +2,14 @@
 
 Una aplicación móvil desarrollada en Flutter que permite a los usuarios realizar escaneo de códigos QR y utilizar autenticación biométrica (Face ID/Huella Digital).
 
+## Demostración
+
+Para ver la aplicación en funcionamiento, accede al siguiente enlace:
+
+🎬 [Ver demostración de la aplicación](https://drive.google.com/file/d/1YSbhqzZ4G5RXzyUnXm3yBY8OPioC6eTd/view?usp=sharing)
+
+🎬 [Ver Autentificación biometrica](https://drive.google.com/file/d/11VfmUQkh3vvVLFeVdq1zL4cAFJHfQ-7N/view?usp=sharing)
+
 ## Características
 
 - 📱 Interfaz de usuario intuitiva y moderna
@@ -60,13 +68,6 @@ lib/
 └── main.dart
 ```
 
-## Pruebas
-
-Para ejecutar las pruebas unitarias:
-
-```bash
-flutter test
-```
 
 ## Notas adicionales
 
