@@ -38,7 +38,10 @@ class _BiometricLoginButtonState extends State<BiometricLoginButton> {
     }
     
     if (!_isAvailable) {
-      return const SizedBox.shrink(); // No mostrar nada si la biometría no está disponible
+      return const Text(
+        'Biometría no disponible en este dispositivo',
+        style: TextStyle(color: Colors.red),
+      );
     }
 
     return BlocConsumer<AuthBloc, AuthState>(
