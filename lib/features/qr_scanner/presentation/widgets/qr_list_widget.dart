@@ -66,9 +66,6 @@ class QrListWidget extends StatelessWidget {
   }
 
   String _formatDate(DateTime date) {
-
-    final dateNow = DateTime;
-
     return '${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}';
   }
 }
