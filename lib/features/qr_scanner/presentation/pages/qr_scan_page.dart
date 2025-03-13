@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seek_project/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:seek_project/features/auth/presentation/bloc/auth_event.dart';
+import 'package:seek_project/features/auth/presentation/pages/biometric_login_page.dart';
 import 'package:seek_project/features/qr_scanner/domain/entities/qr_scan_entity.dart';
 import 'package:seek_project/features/qr_scanner/presentation/bloc/qr_bloc.dart';
 import 'package:seek_project/features/qr_scanner/presentation/bloc/qr_event.dart';
@@ -20,6 +23,9 @@ class _QrScanPageState extends State<QrScanPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Escaneo QR'),
+        actions: [
+          _logoutButton(),
+        ],
       ),
       floatingActionButton: QrScanButton(
         onScanSuccess: (code) {
@@ -56,6 +62,22 @@ class _QrScanPageState extends State<QrScanPage> {
           return const Center(child: Text('No hay códigos QR guardados'));
         },
       ),
+    );
+  }
+
+  Widget _logoutButton() {
+    return IconButton(
+      icon: const Icon(
+        Icons.logout,
+        color: Colors.red,
+      ),
+      onPressed: () {
+        context.read<AuthBloc>().add(LogoutUser());
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const BiometricLoginPage()),
+        );
+      },
     );
   }
 }

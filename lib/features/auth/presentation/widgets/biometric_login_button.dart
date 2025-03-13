@@ -1,18 +1,17 @@
-// lib/widgets/biometric_login_button.dart
 import 'package:flutter/material.dart';
-import 'package:seek_project/features/auth/infrastructure/biometric_auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seek_project/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:seek_project/features/auth/presentation/bloc/auth_event.dart';
+import 'package:seek_project/features/auth/presentation/bloc/auth_state.dart';
 
 class BiometricLoginButton extends StatefulWidget {
-  final Function(bool success) onAuthResult;
-  
-  const BiometricLoginButton({Key? key, required this.onAuthResult}) : super(key: key);
+  const BiometricLoginButton({Key? key}) : super(key: key);
 
   @override
   _BiometricLoginButtonState createState() => _BiometricLoginButtonState();
 }
 
 class _BiometricLoginButtonState extends State<BiometricLoginButton> {
-  final BiometricAuthService _authService = BiometricAuthService();
   bool _isAvailable = false;
   bool _isLoading = true;
 
@@ -23,28 +22,13 @@ class _BiometricLoginButtonState extends State<BiometricLoginButton> {
   }
 
   Future<void> _checkBiometricAvailability() async {
-    final isAvailable = await _authService.isBiometricAvailable();
+    final authBloc = context.read<AuthBloc>();
+    final isAvailable = await authBloc.biometricAuthDatasource.isBiometricAvailable();
+
     setState(() {
       _isAvailable = isAvailable;
       _isLoading = false;
     });
-  }
-
-  Future<void> _authenticate() async {
-    final result = await _authService.authenticateUser(
-      reason: 'Autentícate para acceder a la aplicación',
-    );
-    
-    widget.onAuthResult(result.success ?? false);
-    
-    if (result.success != true && result.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.errorMessage!),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 
   @override
@@ -56,11 +40,26 @@ class _BiometricLoginButtonState extends State<BiometricLoginButton> {
     if (!_isAvailable) {
       return const SizedBox.shrink(); // No mostrar nada si la biometría no está disponible
     }
-    
-    return ElevatedButton.icon(
-      icon: const Icon(Icons.fingerprint),
-      label: const Text('Iniciar sesión con biometría'),
-      onPressed: _authenticate,
+
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          );
+        }
+      },
+      builder: (context, state) {
+        return ElevatedButton.icon(
+          icon: const Icon(Icons.fingerprint),
+          label: const Text('Iniciar sesión con biometría'),
+          onPressed: state is AuthLoading
+              ? null
+              : () {
+                  context.read<AuthBloc>().add(AuthenticateUser());
+                },
+        );
+      },
     );
   }
 }
