@@ -27,6 +27,7 @@ class _QrScanPageState extends State<QrScanPage> {
           _logoutButton(),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: QrScanButton(
         onScanSuccess: (code) {
           

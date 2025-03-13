@@ -56,9 +56,19 @@ class _QrScanButtonState extends State<QrScanButton> {
     }
     
     return ElevatedButton.icon(
-      icon: const Icon(Icons.qr_code_scanner),
+      icon: const Icon(
+        Icons.qr_code_scanner,
+        color: Colors.green,
+      ),
       label: const Text('Escanear QR'),
       onPressed: _scanQrCode,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.green,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        fixedSize: const Size(200, 50),
+      ),
     );
   }
 }
